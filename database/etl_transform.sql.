@@ -1,0 +1,14 @@
+-- Script de Migração e Limpeza (ETL)
+-- Este comando seleciona os dados da staging_area, limpa e insere na tabela products
+
+INSERT INTO products (product_code, product_name, product_location, category, quantity, price)
+SELECT DISTINCT
+    col4,
+    col3,
+    col2,
+    col6,
+    REPLACE(col7, ',', '.')::NUMERIC::INT,
+    REPLACE(col10, ',', '.')::NUMERIC(10,2)
+FROM staging_area
+WHERE col4 IS NOT NULL AND col4 <> ''
+ON CONFLICT (product_code) DO NOTHING;
