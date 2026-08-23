@@ -9,7 +9,10 @@ public class Product {
 
     @Id
     @Column(name = "produto_codigo")
-    private String produtoCodigo;
+    private String produtoCodigo; // ID original da API (Coluna A)
+
+    @Column(name = "referencia")
+    private String produtoReferencia; // O código que o usuário digita (Coluna D - ex: 495001S000)
 
     private String localizacao;
     private String descricao;
@@ -23,8 +26,13 @@ public class Product {
     @Column(name = "tipo_produto")
     private String tipoProduto;
 
-    // Getters
+    // Getters e Setters
     public String getProdutoCodigo() { return produtoCodigo; }
+    public void setProdutoCodigo(String produtoCodigo) { this.produtoCodigo = produtoCodigo; }
+
+    public String getProdutoReferencia() { return produtoReferencia; }
+    public void setProdutoReferencia(String produtoReferencia) { this.produtoReferencia = produtoReferencia; }
+
     public String getLocalizacao() { return localizacao; }
     public String getDescricao() { return descricao; }
     public BigDecimal getValorUnitario() { return valorUnitario; }
