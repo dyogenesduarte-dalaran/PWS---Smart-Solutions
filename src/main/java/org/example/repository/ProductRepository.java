@@ -8,6 +8,6 @@ import java.util.Optional;
 @Repository
 public interface ProductRepository extends JpaRepository<Product, String> {
 
-    // O Spring gera a busca usando o atributo Java "produtoReferencia" ignorando maiúsculas/minúsculas
-    Optional<Product> findByProdutoReferenciaIgnoreCase(String produtoReferencia);
+    // Busca exata pela referência limpa
+    Optional<Product> findByReferenciaLimpa(String referenciaLimpa);
 }

@@ -1,0 +1,534 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PWS Smart Solutions - Gestão Logística</title>
+    <style>
+        /* Variáveis do Modo Escuro (Padrão) */
+        :root {
+            --bg-base: #0f1115;
+            --bg-card: #161b22;
+            --border-color: #30363d;
+            --text-main: #f0f6fc;
+            --text-muted: #8b949e;
+            --accent-green: #238636;
+            --accent-green-hover: #2ea043;
+            --accent-blue: #1f6feb;
+            --input-bg: #0d1117;
+            --menu-hover: #1c2128;
+            --eye-bg: #0d1117;
+            --shadow-color: rgba(0, 0, 0, 0.6);
+        }
+
+        /* Variáveis do Modo Claro */
+        [data-theme="light"] {
+            --bg-base: #f0f3f6;
+            --bg-card: #ffffff;
+            --border-color: #d0d7de;
+            --text-main: #1f2328;
+            --text-muted: #656d76;
+            --accent-green: #1a7f37;
+            --accent-green-hover: #116329;
+            --accent-blue: #0969da;
+            --input-bg: #ffffff;
+            --menu-hover: #f6f8fa;
+            --eye-bg: #ffffff;
+            --shadow-color: rgba(0, 0, 0, 0.1);
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--bg-base);
+            color: var(--text-main);
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+
+        .container {
+            background: var(--bg-card);
+            padding: 40px 30px 25px 30px;
+            border-radius: 12px;
+            box-shadow: 0 12px 32px var(--shadow-color);
+            width: 100%;
+            max-width: 560px;
+            border: 1px solid var(--border-color);
+            box-sizing: border-box;
+            position: relative;
+            transition: all 0.3s ease;
+        }
+
+        /* Botão Dark/Light Mode */
+        .theme-toggle {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: transparent;
+            border: 1px solid var(--border-color);
+            color: var(--text-main);
+            padding: 8px 12px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .theme-toggle:hover {
+            background-color: var(--menu-hover);
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+            margin-top: 10px;
+        }
+
+        .logo-svg {
+            width: 75px;
+            height: 75px;
+            margin-bottom: 12px;
+            filter: drop-shadow(0 4px 10px rgba(88, 166, 255, 0.3));
+        }
+
+        .header h1 {
+            font-size: 24px;
+            color: var(--text-main);
+            margin: 5px 0 5px 0;
+            letter-spacing: 0.5px;
+        }
+
+        .header p {
+            font-size: 14px;
+            color: var(--text-muted);
+            margin: 0;
+        }
+
+        .view {
+            display: none;
+        }
+        .view.active {
+            display: block;
+            animation: fadeIn 0.4s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(5px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .menu-options {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .menu-btn {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            width: 100%;
+            padding: 16px 20px;
+            background-color: var(--input-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            color: var(--text-main);
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            box-sizing: border-box;
+        }
+
+        .menu-btn:hover {
+            border-color: var(--accent-blue);
+            background-color: var(--menu-hover);
+            transform: translateY(-2px);
+        }
+
+        .search-box {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 25px;
+        }
+
+        input[type="text"] {
+            flex: 1;
+            padding: 12px 16px;
+            background-color: var(--input-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            color: var(--text-main);
+            font-size: 15px;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+
+        input[type="text"]:focus {
+            border-color: var(--accent-blue);
+        }
+
+        .action-btn {
+            padding: 12px 20px;
+            background-color: var(--accent-green);
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+
+        .action-btn:hover {
+            background-color: var(--accent-green-hover);
+        }
+
+        .result {
+            margin-top: 20px;
+            padding: 20px;
+            border-radius: 8px;
+            background-color: var(--input-bg);
+            border: 1px solid var(--accent-green);
+            display: none;
+        }
+
+        .result-header {
+            font-size: 12px;
+            font-weight: bold;
+            color: var(--accent-green);
+            text-transform: uppercase;
+            margin-bottom: 12px;
+        }
+
+        .result-item {
+            margin: 10px 0;
+            font-size: 14px;
+            color: var(--text-muted);
+        }
+
+        .result-item span {
+            color: var(--text-main);
+            font-weight: 600;
+        }
+
+        .highlight-box {
+            display: flex;
+            justify-content: space-between;
+            background: var(--bg-card);
+            padding: 12px 15px;
+            border-radius: 6px;
+            margin-top: 15px;
+            border: 1px solid var(--border-color);
+        }
+
+        .highlight-label {
+            font-size: 11px;
+            color: var(--text-muted);
+            text-transform: uppercase;
+        }
+
+        .highlight-value {
+            font-size: 16px;
+            color: var(--accent-blue);
+            font-weight: bold;
+            margin-top: 4px;
+            display: block;
+        }
+
+        .dev-card {
+            background-color: var(--input-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+
+        .dev-name {
+            font-size: 18px;
+            font-weight: bold;
+            color: var(--text-main);
+            margin-bottom: 5px;
+        }
+
+        .dev-role {
+            font-size: 13px;
+            color: var(--accent-blue);
+            margin-bottom: 15px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            font-weight: 600;
+        }
+
+        .contact-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin: 12px 0;
+            font-size: 14px;
+            color: var(--text-muted);
+            word-break: break-all;
+        }
+
+        .contact-item a {
+            color: var(--accent-blue);
+            text-decoration: none;
+            font-weight: 500;
+        }
+
+        .contact-item a:hover {
+            text-decoration: underline;
+        }
+
+        .back-btn {
+            background: transparent;
+            border: 1px solid var(--border-color);
+            color: var(--text-muted);
+            padding: 10px 16px;
+            border-radius: 6px;
+            font-size: 14px;
+            cursor: pointer;
+            transition: all 0.2s;
+            width: 100%;
+            margin-top: 10px;
+            font-weight: 600;
+        }
+
+        .back-btn:hover {
+            background-color: var(--menu-hover);
+            color: var(--text-main);
+            border-color: var(--text-muted);
+        }
+
+        .error {
+            color: #f85149;
+            text-align: center;
+            margin-top: 15px;
+            font-weight: 600;
+            font-size: 14px;
+        }
+
+        /* Frase de Rodapé Institucional */
+        .footer-tagline {
+            text-align: center;
+            font-size: 12px;
+            color: var(--text-muted);
+            margin-top: 30px;
+            border-top: 1px solid var(--border-color);
+            padding-top: 15px;
+            letter-spacing: 0.3px;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <!-- Botão de Alternar Tema -->
+    <button class="theme-toggle" onclick="toggleTheme()" id="themeBtn">
+        <span id="themeIcon">☀️</span> <span id="themeText">Claro</span>
+    </button>
+
+    <!-- Logo e Cabeçalho Padrão -->
+    <div class="header">
+        <svg class="logo-svg" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M10 50 C 30 22, 70 22, 90 50 C 70 78, 30 78, 10 50 Z" stroke="url(#eyeGrad)" stroke-width="4" fill="var(--eye-bg)"/>
+            <circle cx="50" cy="50" r="24" fill="#1f6feb" opacity="0.25"/>
+            <circle cx="50" cy="50" r="18" fill="var(--eye-bg)" stroke="#58a6ff" stroke-width="2"/>
+            <ellipse cx="50" cy="43" rx="7" ry="2.5" fill="#3fb950"/>
+            <path d="M43 43 L43 47 C 43 49, 57 49, 57 47 L57 43" fill="#3fb950"/>
+            <ellipse cx="50" cy="49" rx="7" ry="2.5" fill="#3fb950"/>
+            <path d="M43 49 L43 53 C 43 55, 57 55, 57 53 L57 49" fill="#3fb950"/>
+            <ellipse cx="50" cy="55" rx="7" ry="2.5" fill="#2ea043"/>
+            <path d="M43 55 L43 59 C 43 61, 57 61, 57 59 L57 55" fill="#2ea043"/>
+            <defs>
+                <linearGradient id="eyeGrad" x1="10" y1="50" x2="90" y2="50" gradientUnits="userSpaceOnUse">
+                    <stop offset="0%" stop-color="#3fb950"/>
+                    <stop offset="50%" stop-color="#58a6ff"/>
+                    <stop offset="100%" stop-color="#3fb950"/>
+                </linearGradient>
+            </defs>
+        </svg>
+        <h1>PWS Smart Solutions</h1>
+        <p>Ecossistema de Gestão e Logística</p>
+    </div>
+
+    <!-- TELA INICIAL (MENU) -->
+    <div id="homeView" class="view active">
+        <div class="menu-options">
+            <button class="menu-btn" onclick="switchView('stockView')">
+                <div style="display: flex; align-items: center; gap: 12px;">
+                    <span class="icon">📦</span>
+                    <span>Estoque de Produtos</span>
+                </div>
+                <span>→</span>
+            </button>
+
+            <button class="menu-btn" onclick="switchView('devView')">
+                <div style="display: flex; align-items: center; gap: 12px;">
+                    <span class="icon">👨‍💻</span>
+                    <span>Contato com o Desenvolvedor</span>
+                </div>
+                <span>→</span>
+            </button>
+        </div>
+    </div>
+
+    <!-- TELA DE ESTOQUE (BUSCA) -->
+    <div id="stockView" class="view">
+        <div style="margin-bottom: 20px; font-size: 15px; font-weight: 600; color: var(--accent-blue);">🔍 Consulta de Peças no Estoque</div>
+
+        <div class="search-box">
+            <!-- Adicionado suporte à tecla Enter -->
+            <input type="text" id="referenciaInput" placeholder="Ex: 92101R1000" onkeydown="if(event.key === 'Enter') buscarProduto()">
+            <button class="action-btn" onclick="buscarProduto()">Consultar</button>
+        </div>
+
+        <div id="errorMsg" class="error"></div>
+
+        <div id="resultCard" class="result">
+            <div class="result-header">✓ Produto Encontrado</div>
+
+            <div class="result-item">Referência: <span id="resReferencia"></span></div>
+            <div class="result-item">Descrição: <span id="resDescricao"></span></div>
+
+            <div class="highlight-box">
+                <div class="highlight-item">
+                    <span class="highlight-label">Localização</span>
+                    <span class="highlight-value" id="resLocalizacao">-</span>
+                </div>
+                <div class="highlight-item" style="text-align: right;">
+                    <span class="highlight-label">Estoque Total</span>
+                    <span class="highlight-value" id="resEstoque" style="color: var(--accent-green);">0</span>
+                </div>
+            </div>
+
+            <div class="result-item" style="margin-top: 15px;">Valor Unitário: R$ <span id="resValor" style="color: var(--accent-green);"></span></div>
+        </div>
+
+        <button class="back-btn" onclick="switchView('homeView')">← Voltar ao Início</button>
+    </div>
+
+    <!-- TELA DE CONTATO COM O DESENVOLVEDOR -->
+    <div id="devView" class="view">
+        <div class="dev-card">
+            <div class="dev-name">Diógenes Duarte</div>
+            <div class="dev-role">Engenheiro de Software & Desenvolvedor Backend</div>
+
+            <div class="contact-item">
+                <span>📱</span>
+                <div>
+                    <strong>WhatsApp:</strong><br>
+                    <a href="https://wa.me/5561992930718" target="_blank">+55 (61) 99293-0718</a>
+                </div>
+            </div>
+
+            <div class="contact-item">
+                <span>✉️</span>
+                <div>
+                    <strong>E-mail:</strong><br>
+                    <a href="mailto:dyogenes.duarte@gmail.com">dyogenes.duarte@gmail.com</a>
+                </div>
+            </div>
+
+            <div class="contact-item">
+                <span>💼</span>
+                <div>
+                    <strong>LinkedIn:</strong><br>
+                    <a href="https://www.linkedin.com/in/diógenes-duarte-510467115" target="_blank">linkedin.com/in/diógenes-duarte-510467115</a>
+                </div>
+            </div>
+        </div>
+
+        <button class="back-btn" onclick="switchView('homeView')">← Voltar ao Início</button>
+    </div>
+
+    <!-- FRASE DE RODAPÉ INSTITUCIONAL -->
+    <div class="footer-tagline">
+        Inovação, precisão e segurança: soluções PWS em que você pode confiar.
+    </div>
+</div>
+
+<script>
+    const themeBtn = document.getElementById('themeBtn');
+    const themeIcon = document.getElementById('themeIcon');
+    const themeText = document.getElementById('themeText');
+
+    let currentTheme = localStorage.getItem('theme') || 'dark';
+
+    if (currentTheme === 'light') {
+        document.documentElement.setAttribute('data-theme', 'light');
+        themeIcon.innerText = '🌙';
+        themeText.innerText = 'Escuro';
+    }
+
+    function toggleTheme() {
+        if (document.documentElement.getAttribute('data-theme') === 'light') {
+            document.documentElement.removeAttribute('data-theme');
+            localStorage.setItem('theme', 'dark');
+            themeIcon.innerText = '☀️';
+            themeText.innerText = 'Claro';
+        } else {
+            document.documentElement.setAttribute('data-theme', 'light');
+            localStorage.setItem('theme', 'light');
+            themeIcon.innerText = '🌙';
+            themeText.innerText = 'Escuro';
+        }
+    }
+
+    function switchView(viewId) {
+        document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+        document.getElementById(viewId).classList.add('active');
+
+        if(viewId === 'stockView') {
+            document.getElementById('errorMsg').innerText = '';
+            document.getElementById('resultCard').style.display = 'none';
+        }
+    }
+
+    async function buscarProduto() {
+        const referencia = document.getElementById('referenciaInput').value.trim();
+        const resultCard = document.getElementById('resultCard');
+        const errorMsg = document.getElementById('errorMsg');
+
+        resultCard.style.display = 'none';
+        errorMsg.innerText = '';
+
+        if (!referencia) {
+            errorMsg.innerText = 'Por favor, digite uma referência válida.';
+            return;
+        }
+
+        try {
+            const response = await fetch(`/api/products/${encodeURIComponent(referencia)}`);
+            if (!response.ok) {
+                throw new Error('Produto não encontrado.');
+            }
+            const product = await response.json();
+
+            document.getElementById('resReferencia').innerText = product.produtoReferencia || '-';
+            document.getElementById('resDescricao').innerText = product.descricao || '-';
+            document.getElementById('resLocalizacao').innerText = product.localizacao || '-';
+
+            // Formatação monetária brasileira (Milhar com ponto e decimal com vírgula)
+            const valorFormatado = product.valorUnitario
+                ? product.valorUnitario.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })
+                : '0,00';
+            document.getElementById('resValor').innerText = valorFormatado;
+
+            document.getElementById('resEstoque').innerText = product.estoqueTotal || '0';
+
+            resultCard.style.display = 'block';
+        } catch (error) {
+            errorMsg.innerText = 'Produto não encontrado no sistema.';
+        }
+    }
+</script>
+</body>
+</html>
