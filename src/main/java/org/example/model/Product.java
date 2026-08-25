@@ -42,7 +42,7 @@ public class Product {
     public String getProdutoCodigo() { return produtoCodigo; }
     public void setProdutoCodigo(String produtoCodigo) { this.produtoCodigo = produtoCodigo; }
 
-    public String getprodutoReferencia() { return produtoReferencia; }
+    public String getProdutoReferencia() { return produtoReferencia; }
 
     public String getReferenciaLimpa() { return referenciaLimpa; }
     public void setReferenciaLimpa(String referenciaLimpa) { this.referenciaLimpa = referenciaLimpa; }
