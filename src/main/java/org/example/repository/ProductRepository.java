@@ -8,6 +8,6 @@ import java.util.Optional;
 @Repository
 public interface ProductRepository extends JpaRepository<Product, String> {
 
-    // Busca exata pela referência limpa
-    Optional<Product> findByReferenciaLimpa(String referenciaLimpa);
+    // Altere para findByProductCode (reflete a coluna product_code do banco)
+    Optional<Product> findByProductCode(String productCode);
 }

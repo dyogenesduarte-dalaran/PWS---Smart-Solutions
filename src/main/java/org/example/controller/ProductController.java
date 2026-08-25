@@ -17,11 +17,12 @@ public class ProductController {
     public ResponseEntity<Product> getProductByReferencia(@PathVariable String referencia) {
         System.out.println(">>> Referência digitada pelo usuário: " + referencia);
 
-        // Aplica a mesma limpeza: remove hífens, pontos, espaços e converte para maiúsculo
+        // Limpa a referência digitada
         String referenciaLimpa = referencia.replaceAll("[^a-zA-Z0-9]", "").toUpperCase();
         System.out.println(">>> Buscando no banco pela referência limpa: " + referenciaLimpa);
 
-        return productRepository.findByReferenciaLimpa(referenciaLimpa)
+        // Chamada corrigida para o repositório
+        return productRepository.findByProductCode(referenciaLimpa)
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
     }
