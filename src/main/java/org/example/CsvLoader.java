@@ -2,7 +2,10 @@ package org.example;
 
 import org.postgresql.copy.CopyManager;
 import org.postgresql.core.BaseConnection;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
+import javax.sql.DataSource;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
@@ -10,12 +13,18 @@ import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Statement;
 
+@Component
 public class CsvLoader {
 
-    public static void carregarCsvParaStaging(String caminhoCsv) {
+    @Autowired
+    private DataSource dataSource; // O Spring injeta a conexão real configurada no Render/Neon
+
+    public void carregarCsvParaStaging(String caminhoCsv) {
         System.out.println("Limpando a staging_area antes da nova carga...");
 
-        try (Connection conn = dataBaseConnector.getConnection()) {
+        // Usa o DataSource gerenciado pelo Spring em vez do dataBaseConnector manual
+        try (Connection conn = dataSource.getConnection()) {
+
             // 1. Limpa a staging_area
             try (Statement stmt = conn.createStatement()) {
                 stmt.executeUpdate("TRUNCATE TABLE staging_area;");
@@ -23,7 +32,7 @@ public class CsvLoader {
 
             System.out.println("Executando carga de alta performance via COPY do PostgreSQL...");
 
-            // 2. Utiliza o CopyManager para ler todas as 16 colunas do CSV nativamente
+            // 2. Utiliza o CopyManager com a conexão da nuvem unwrapped com sucesso
             BaseConnection baseConn = conn.unwrap(BaseConnection.class);
             CopyManager copyManager = new CopyManager(baseConn);
 
