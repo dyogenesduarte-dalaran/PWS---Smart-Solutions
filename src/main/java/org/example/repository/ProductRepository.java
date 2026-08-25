@@ -10,7 +10,7 @@ import java.util.Optional;
 @Repository
 public interface ProductRepository extends JpaRepository<Product, String> {
 
-    // Query nativa direta no banco: ignora regras de nomes do JPA e vai certeira na coluna product_code
-    @Query(value = "SELECT * FROM products WHERE product_code = :code", nativeQuery = true)
+    // JPQL: consulta orientada a objetos do JPA (mapeia automaticamente para a entidade Product)
+    @Query("SELECT p FROM Product p WHERE p.productCode = :code")
     Optional<Product> findByProductCode(@Param("code") String code);
 }
