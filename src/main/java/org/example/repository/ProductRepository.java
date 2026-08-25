@@ -9,8 +9,6 @@ import java.util.Optional;
 
 @Repository
 public interface ProductRepository extends JpaRepository<Product, String> {
-
-    // JPQL: consulta orientada a objetos do JPA (mapeia automaticamente para a entidade Product)
-    @Query("SELECT p FROM Product p WHERE p.productCode = :code")
-    Optional<Product> findByProductCode(@Param("code") String code);
+    @Query("SELECT p FROM Product p WHERE p.referenciaLimpa = :code")
+    Optional<Product> findByReferenciaLimpa(@Param("code") String code);
 }

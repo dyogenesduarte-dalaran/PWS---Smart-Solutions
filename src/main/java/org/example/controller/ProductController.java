@@ -22,7 +22,7 @@ public class ProductController {
         System.out.println(">>> Buscando no banco pela referência limpa: " + referenciaLimpa);
 
         // Chamada corrigida para o repositório
-        return productRepository.findByProductCode(referenciaLimpa)
+        return productRepository.findByReferenciaLimpa(referenciaLimpa)
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
     }
