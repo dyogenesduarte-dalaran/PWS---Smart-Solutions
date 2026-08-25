@@ -21,9 +21,15 @@ public class ProductController {
         String referenciaLimpa = referencia.replaceAll("[^a-zA-Z0-9]", "").toUpperCase();
         System.out.println(">>> Buscando no banco pela referência limpa: " + referenciaLimpa);
 
-        // Chamada corrigida para o repositório
+        // Chamada com logs detalhados para rastreamento
         return productRepository.findByReferenciaLimpa(referenciaLimpa)
-                .map(ResponseEntity::ok)
-                .orElse(ResponseEntity.notFound().build());
+                .map(product -> {
+                    System.out.println(">>> Sucesso: Produto encontrado no banco!");
+                    return ResponseEntity.ok(product);
+                })
+                .orElseGet(() -> {
+                    System.out.println(">>> ALERTA: Produto NÃO encontrado no banco para a referência: " + referenciaLimpa);
+                    return ResponseEntity.notFound().build();
+                });
     }
 }
