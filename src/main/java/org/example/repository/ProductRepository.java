@@ -8,7 +8,8 @@ import org.springframework.stereotype.Repository;
 import java.util.Optional;
 
 @Repository
-public interface ProductRepository extends JpaRepository<Product, String> {
-    @Query("SELECT p FROM Product p WHERE p.referenciaLimpa = :code")
-    Optional<Product> findByReferenciaLimpa(@Param("code") String code);
+public interface ProductRepository extends JpaRepository<Product, Long> {
+
+    @Query("SELECT p FROM Product p WHERE p.productCode = :code")
+    Optional<Product> findByProductCode(@Param("code") String code);
 }

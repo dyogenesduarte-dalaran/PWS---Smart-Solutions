@@ -316,7 +316,6 @@
             font-size: 14px;
         }
 
-        /* Frase de Rodapé Institucional */
         .footer-tagline {
             text-align: center;
             font-size: 12px;
@@ -385,8 +384,7 @@
         <div style="margin-bottom: 20px; font-size: 15px; font-weight: 600; color: var(--accent-blue);">🔍 Consulta de Peças no Estoque</div>
 
         <div class="search-box">
-            <!-- Adicionado suporte à tecla Enter -->
-            <input type="text" id="referenciaInput" placeholder="Ex: 92101R1000" onkeydown="if(event.key === 'Enter') buscarProduto()">
+            <input type="text" id="referenciaInput" placeholder="Ex: 1891" onkeydown="if(event.key === 'Enter') buscarProduto()">
             <button class="action-btn" onclick="buscarProduto()">Consultar</button>
         </div>
 
@@ -512,17 +510,19 @@
             }
             const product = await response.json();
 
-            document.getElementById('resReferencia').innerText = product.produtoReferencia || '-';
-            document.getElementById('resDescricao').innerText = product.descricao || '-';
-            document.getElementById('resLocalizacao').innerText = product.localizacao || '-';
+            // Mapeado corretamente para os campos em inglês do backend
+            document.getElementById('resReferencia').innerText = product.productCode || '-';
+            document.getElementById('resDescricao').innerText = product.productName || '-';
+            document.getElementById('resLocalizacao').innerText = product.productLocation || '-';
 
-            // Formatação monetária brasileira (Milhar com ponto e decimal com vírgula)
-            const valorFormatado = product.valorUnitario
-                ? product.valorUnitario.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })
+            // Formatação monetária brasileira (Preço)
+            const valorFormatado = product.price
+                ? Number(product.price).toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })
                 : '0,00';
             document.getElementById('resValor').innerText = valorFormatado;
 
-            document.getElementById('resEstoque').innerText = product.estoqueTotal || '0';
+            // Quantidade em estoque
+            document.getElementById('resEstoque').innerText = product.quantity !== undefined && product.quantity !== null ? product.quantity : '0';
 
             resultCard.style.display = 'block';
         } catch (error) {

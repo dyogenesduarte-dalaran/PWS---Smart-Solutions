@@ -8,57 +8,43 @@ import java.math.BigDecimal;
 public class Product {
 
     @Id
-    @Column(name = "produto_codigo")
-    private String produtoCodigo;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
-    @Column(name = "referencia")
-    private String produtoReferencia; // O código original com formatação
+    @Column(name = "product_code")
+    private String productCode;
 
-    @Column(name = "referencia_limpa")
-    private String referenciaLimpa; // O código normalizado (só letras e números maiúsculos)
+    @Column(name = "product_name")
+    private String productName;
 
-    private String localizacao;
-    private String descricao;
+    @Column(name = "product_location")
+    private String productLocation;
 
-    @Column(name = "valor_unitario")
-    private BigDecimal valorUnitario;
+    private String category;
 
-    @Column(name = "estoque_total")
-    private BigDecimal estoqueTotal;
+    private BigDecimal quantity;
 
-    @Column(name = "tipo_produto")
-    private String tipoProduto;
-
-    // Método utilitário para limpar a referência automaticamente antes de salvar
-    public void setProdutoReferencia(String produtoReferencia) {
-        this.produtoReferencia = produtoReferencia;
-        if (produtoReferencia != null) {
-            // Remove tudo o que não for letra ou número e transforma em maiúsculo
-            this.referenciaLimpa = produtoReferencia.replaceAll("[^a-zA-Z0-9]", "").toUpperCase();
-        }
-    }
+    private BigDecimal price;
 
     // Getters e Setters
-    public String getProdutoCodigo() { return produtoCodigo; }
-    public void setProdutoCodigo(String produtoCodigo) { this.produtoCodigo = produtoCodigo; }
+    public Long getId() { return id; }
+    public void setId(Long id) { this.id = id; }
 
-    public String getProdutoReferencia() { return produtoReferencia; }
+    public String getProductCode() { return productCode; }
+    public void setProductCode(String productCode) { this.productCode = productCode; }
 
-    public String getReferenciaLimpa() { return referenciaLimpa; }
-    public void setReferenciaLimpa(String referenciaLimpa) { this.referenciaLimpa = referenciaLimpa; }
+    public String getProductName() { return productName; }
+    public void setProductName(String productName) { this.productName = productName; }
 
-    public String getLocalizacao() { return localizacao; }
-    public void setLocalizacao(String localizacao) { this.localizacao = localizacao; }
+    public String getProductLocation() { return productLocation; }
+    public void setProductLocation(String productLocation) { this.productLocation = productLocation; }
 
-    public String getDescricao() { return descricao; }
-    public void setDescricao(String descricao) { this.descricao = descricao; }
+    public String getCategory() { return category; }
+    public void setCategory(String category) { this.category = category; }
 
-    public BigDecimal getValorUnitario() { return valorUnitario; }
-    public void setValorUnitario(BigDecimal valorUnitario) { this.valorUnitario = valorUnitario; }
+    public BigDecimal getQuantity() { return quantity; }
+    public void setQuantity(BigDecimal quantity) { this.quantity = quantity; }
 
-    public BigDecimal getEstoqueTotal() { return estoqueTotal; }
-    public void setEstoqueTotal(BigDecimal estoqueTotal) { this.estoqueTotal = estoqueTotal; }
-
-    public String getTipoProduto() { return tipoProduto; }
-    public void setTipoProduto(String tipoProduto) { this.tipoProduto = tipoProduto; }
+    public BigDecimal getPrice() { return price; }
+    public void setPrice(BigDecimal price) { this.price = price; }
 }

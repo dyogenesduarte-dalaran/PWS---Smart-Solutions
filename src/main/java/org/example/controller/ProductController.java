@@ -13,22 +13,17 @@ public class ProductController {
     @Autowired
     private ProductRepository productRepository;
 
-    @GetMapping("/{referencia}")
-    public ResponseEntity<Product> getProductByReferencia(@PathVariable String referencia) {
-        System.out.println(">>> Referência digitada pelo usuário: " + referencia);
+    @GetMapping("/{codigo}")
+    public ResponseEntity<Product> getProductByCode(@PathVariable String codigo) {
+        System.out.println(">>> Código digitado pelo usuário: " + codigo);
 
-        // Limpa a referência digitada
-        String referenciaLimpa = referencia.replaceAll("[^a-zA-Z0-9]", "").toUpperCase();
-        System.out.println(">>> Buscando no banco pela referência limpa: " + referenciaLimpa);
-
-        // Chamada com logs detalhados para rastreamento
-        return productRepository.findByReferenciaLimpa(referenciaLimpa)
+        return productRepository.findByProductCode(codigo)
                 .map(product -> {
                     System.out.println(">>> Sucesso: Produto encontrado no banco!");
                     return ResponseEntity.ok(product);
                 })
                 .orElseGet(() -> {
-                    System.out.println(">>> ALERTA: Produto NÃO encontrado no banco para a referência: " + referenciaLimpa);
+                    System.out.println(">>> ALERTA: Produto NÃO encontrado para o código: " + codigo);
                     return ResponseEntity.notFound().build();
                 });
     }
