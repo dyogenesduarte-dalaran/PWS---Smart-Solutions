@@ -1,7 +1,7 @@
-package com.pws.smartsolutions.service;
+package org.example.service;
 
-import com.pws.smartsolutions.model.Product;
-import com.pws.smartsolutions.repository.ProductRepository;
+import org.example.model.Product;
+import org.example.repository.ProductRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -33,23 +33,35 @@ public class ProductImportService {
                 }
 
                 try {
-                    // Divide a linha considerando vírgulas (ajuste se o seu separador for ponto e vírgula ';')
+                    // Divide a linha pelas vírgulas
                     String[] colunas = linha.split(",(?=(?:[^\"]*\"[^\"]*\")*[^\"]*$)", -1);
 
-                    if (colunas.length < 5) {
+                    // Garante que a linha tem colunas suficientes para não dar erro de índice
+                    if (colunas.length < 4) {
                         System.out.println("Linha " + totalLinhas + " ignorada por tamanho insuficiente.");
                         continue;
                     }
 
-                    // Limpa aspas e espaços dos campos
-                    String productCode = colunas[1].replace("\"", "").trim();
-                    String productName = colunas[2].replace("\"", "").trim();
-                    String location = colunas[3].replace("\"", "").trim();
+                    // ATENÇÃO: Altere os números entre colchetes [ ] conforme a posição real
+                    // das colunas no seu arquivo CSV de origem:
+                    // Exemplo ajustado com base na estrutura visual do seu CSV:
+                    String productName = colunas[1].replace("\"", "").trim(); // Nome do produto
+                    String location    = colunas[2].replace("\"", "").trim(); // Localização
+                    String productCode = colunas[3].replace("\"", "").trim(); // Código do produto (ex: 92101R1000)
 
-                    // Tratamento seguro para quantidade
+                    // Tratamento seguro para quantidade (se houver na coluna 4 ou outra)
                     int quantity = 0;
-                    if (!colunas[4].replace("\"", "").trim().isEmpty()) {
-                        quantity = Integer.parseInt(colunas[4].replace("\"", "").trim());
+                    if (colunas.length > 4 && !colunas[4].replace("\"", "").trim().isEmpty()) {
+                        try {
+                            quantity = Integer.parseInt(colunas[4].replace("\"", "").trim());
+                        } catch (NumberFormatException ignored) {
+                            quantity = 0;
+                        }
+                    }
+
+                    // Se o código estiver vazio, pula a linha
+                    if (productCode.isEmpty()) {
+                        continue;
                     }
 
                     // Verifica se o produto já existe no banco (pelo productCode) para atualizar ou criar novo
@@ -59,19 +71,18 @@ public class ProductImportService {
                     product.setProductCode(productCode);
                     product.setProductName(productName);
                     product.setProductLocation(location);
-                    product.setQuantity(quantity);
-                    product.setPrice(BigDecimal.ZERO); // Ajuste se houver coluna de preço no seu CSV
+                    product.setQuantity(BigDecimal.valueOf(quantity));
+                    product.setPrice(BigDecimal.ZERO); // Ajuste caso tenha coluna de preço
 
                     productRepository.save(product);
                     importadasComSucesso++;
 
                 } catch (Exception e) {
-                    // Se der erro em uma linha específica, exibe no console sem travar o sistema inteiro
                     System.err.println("Erro na linha " + totalLinhas + ": " + e.getMessage());
                 }
             }
 
-            System.out.println("Importação concluída! Total processado: " + importadasComSucesso + " de " + totalLinhas);
+            System.out.println("Importação concluída! Total processado com sucesso: " + importadasComSucesso + " de " + totalLinhas);
 
         } catch (Exception e) {
             throw new RuntimeException("Erro ao processar o arquivo CSV: " + e.getMessage());

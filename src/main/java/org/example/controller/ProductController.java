@@ -1,6 +1,6 @@
-package com.pws.smartsolutions.controller;
+package org.example.controller;
 
-import com.pws.smartsolutions.service.ProductImportService;
+import org.example.service.ProductImportService; // <-- Correção aqui
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
